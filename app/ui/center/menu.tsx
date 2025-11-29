@@ -1,7 +1,7 @@
 'use client';
 
 import { signOutAction } from '@/app/lib/actions';
-import { signOut } from '@/app/pages/api/auth/[...nextauth]';
+import { signOut } from '@/app/api/auth/[...nextauth]/route';
 import Link from 'next/link';
 import styles from './menu.module.css';
 import { useState } from "react";
