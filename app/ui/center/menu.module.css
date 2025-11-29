@@ -1,0 +1,208 @@
+
+/*BASE*/
+.container {
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    bottom: 0vh;
+    z-index: 30;
+}
+
+/* MENU BUTTON*/
+.menuopen {
+  opacity: 0;
+  display: none;
+}
+
+
+/*MENU OPEN BUTTON*/
+.menuopenbutton {
+    background: rgba(0,0,0,0.0);
+    backdrop-filter: blur(8px);
+    width:50px;
+    height:50px;
+    position: absolute;
+    left: 43%;
+    bottom: 1vh;
+    border-radius: 100%;
+    color: white;
+    z-index: 30;
+    cursor: pointer;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menuopenbutton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,1),
+    0 4px 6px -2px rgba(0,0,0,8);
+    background: rgba(29, 29, 29, 0.0);
+    backdrop-filter: blur(8px);
+}
+
+.menuopenbutton:active {
+  transform: scale(0.75);
+  transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.menuopen:checked + .menuopenbutton:active {
+  transform: scale(0.75);
+  transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+
+.menuopen:checked + .menuopenbutton {
+    transform: scale(0.95);
+    transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+}
+
+
+/*MENU LAYOUT*/
+.hamburger {
+  width: 25px;
+  height: 3px;
+  background: white;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -12.5px;
+  margin-top: -1.5px;
+  transition: all 300ms cubic-bezier(0.4,0,0.2,1);
+}
+
+.hamburger:first-child {
+  transform: translate3d(0, -8px, 0);
+}
+.hamburger:nth-child(2) {
+  transform: translate3d(0, 0, 0);
+}
+.hamburger:last-child {
+  transform: translate3d(0, 8px, 0);
+}
+
+
+
+
+/*MENU ANIMATION LAYOUT CHECKED*/
+.menuopen:checked + .menuopenbutton .hamburger:first-child {
+  transform: translate3d(0, 0, 0) rotate(45deg);
+}
+
+.menuopen:checked + .menuopenbutton .hamburger:nth-child(2) {
+  transform: translate3d(0, 0, 0)  scale(0.1, 1);
+}
+
+.menuopen:checked + .menuopenbutton .hamburger:last-child {
+  transform: translate3d(0, 0, 0) rotate(-45deg);
+}
+
+
+
+/*MENU ITEMS*/
+.menuitem {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 50%;
+    width:60px;
+    height:50px;
+    padding:4px 2px;
+    color: white;
+    text-align: center;
+    font-size: 13px;
+    line-height: 40px;
+    transform: translate3d(0, 0, 0);
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+}
+
+.menuitem:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,1),
+                0 4px 6px -2px rgba(0,0,0,0.7);
+    background: rgba(42,35,35,0.7);
+}
+
+.menuitem:active {
+    transform: scale(0.95);
+}
+
+.menuitem:last-child {
+    background: rgba(105, 2, 2, 0.548);
+}
+
+.menuitem:last-child:hover {
+  background: rgba(168, 4, 4, 0.548);
+}
+
+.containeritems {
+    display: flex;
+    justify-content: space-between;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0,0,0,0.1));
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    bottom: 1vh;
+    left: 51.85%;
+    transform: translateX(-50%);
+    z-index: 20;
+    border-radius: 50%;
+    opacity: 0;
+    padding: 0;
+    transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+}
+
+.menuopen:checked ~ .containeritems{
+    opacity: 1;
+    width: 100%;
+    height: 105px;
+    bottom: 0vh;
+    left:50%;
+    padding: 45px 10px;
+    border-radius: 1px;
+}
+
+.menuopen:checked ~ .containeritems .menuitem {
+    opacity: 1;
+}
+
+
+/* MEDIA QUERY */
+@media (min-width: 1024px) {
+    .menuopenbutton {
+      background: rgba(0,0,0,0.6);
+      left: 48.5%;
+    }
+    .containeritems {
+      justify-content: space-evenly;
+        left:50.35%
+    }
+    .menuitem {
+        border-radius: 12px;
+        width:144px;
+        height:36px;
+        padding: 10px 2px;
+        line-height: 15px;
+    }
+    .menuopen:checked ~ .containeritems{
+    opacity: 1;
+    width: 100%;
+    height: 105px;
+    bottom: 0vh;
+    left:50%;
+    padding: 50px 170px;
+    border-radius: 12px;
+  }
+    
+  /*MENU ANIMATION LAYOUT HOVER*/
+  .menuopen:hover + .menuopenbutton .hamburger:last-child {
+      transform: translate3d(-7px,4px,0) rotate(35deg) scale(0.6,1);
+  }
+  .menuopen:hover + .menuopenbutton .hamburger:first-child {
+    transform: translate3d(-7px, -4px, 0) rotate(-35deg) scale(0.6, 1);
+  }
+  .menuopen:hover + .menuopenbutton .hamburger:nth-child(2) {
+    transform: translate3d(0, 0, 0);
+  }
+}
