@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/app/pages/api/auth/[...]nextauth";
+import { auth } from "@/app/pages/api/auth/[...nextauth]";
 import Image from 'next/image';
 import { fetchUser } from "@/app/lib/data";
 import EditProfile from "./EditProfile"
