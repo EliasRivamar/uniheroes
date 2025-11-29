@@ -41,6 +41,15 @@ export type User = {
   user_image_url: string;
 };
 
+export interface Session {
+  user: {
+    id: string
+    username: string
+    email: string
+    profile_pic: string
+  }
+};
+
 export type UserField = {
   user_id: string;
   username: string;

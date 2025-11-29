@@ -1,23 +1,122 @@
-import type { NextAuthConfig } from 'next-auth';
- 
+import NextAuth, { NextAuthConfig } from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
+import Google from 'next-auth/providers/google'
+import { z } from 'zod'
+import type { User, Session } from '@/app/lib/definitions'
+import bcrypt from 'bcrypt'
+import postgres from 'postgres'
+
+declare module 'next-auth' {
+  interface User {
+    id: string
+    email: string
+    username: string
+    profile_pic: string
+  }
+
+  interface Session {
+    user: {
+      id: string
+      username: string
+      email: string
+      profile_pic: string
+    }
+  }
+
+  interface JWT {
+    id: string
+    email: string
+    username: string
+    profile_pic: string
+  }
+}
+
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
+
+async function getUser(email: string): Promise<User | undefined> {
+  try {
+    const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`
+    return user[0]
+  } catch (error) {
+    console.error('Failed to fetch user:', error)
+    throw new Error('Failed to fetch user.')
+  }
+}
+
+
 export const authConfig = {
   pages: {
     signIn: '/login',
   },
-  callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/protected');
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/protected', nextUrl));
-      }
-      return true;
-    },
+
+  session: {
+    strategy: "jwt",
   },
+
   providers: [
-    
-  ], // Add providers with an empty array for now
+    Credentials({
+      async authorize(credentials): Promise<any> {
+        const parsed = z.object({
+          email: z.string().email(),
+          password: z.string().min(6),
+        }).safeParse(credentials);
+
+        if (!parsed.success) return null;
+
+        const { email, password } = parsed.data;
+
+        const user = await getUser(email);
+        if (!user) return null;
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) return null;
+
+        return {
+          id: user.user_id,
+          email: user.email,
+          username: user.username,
+          profile_pic: user.user_image_url,
+        };
+      }
+    }),
+
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    })
+  ],
+
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.user_id = user.id;
+        token.username = user.username; 
+        token.user_image_url = user.profile_pic;
+      }
+      return token;
+    },
+
+    session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.user_id as string;
+        session.user.username = token.username as string;
+        session.user.profile_pic = token.user_image_url as string;
+      }
+      return session;
+    },
+
+    authorized({ auth, request: { nextUrl } }: { auth: any, request: { nextUrl: URL } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnProtected = nextUrl.pathname.startsWith("/protected");
+
+      if (isOnProtected && !isLoggedIn) return false;
+
+      if (!isOnProtected && isLoggedIn) {
+        return Response.redirect(new URL("/protected", nextUrl));
+      }
+
+      return true;
+    }
+  }
+
 } satisfies NextAuthConfig;
