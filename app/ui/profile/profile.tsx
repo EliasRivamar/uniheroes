@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { auth } from "@/app/pages/api/auth/[...]nextauth";
 import Image from 'next/image';
 import { fetchUser } from "@/app/lib/data";
 import EditProfile from "./EditProfile"
@@ -13,7 +13,7 @@ export default async function Pro() {
   return (
     <main className="w-full">
       <div className="flex justify-end">
-        <EditProfile user={user}/>
+        <EditProfile user={user} />
       </div>
       <div className="flex justify-end">
         <h1 className="text-sm lg:text-xl text-white">Pin Favorite Character</h1>
