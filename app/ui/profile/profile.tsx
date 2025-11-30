@@ -7,7 +7,7 @@ import EditProfile from "./EditProfile"
 
 export default async function Pro() {
   const session = await auth();
-  if (!session?.user) return <p>No estás loggeado</p>;
+  if (!session?.user) return <p  className='text-white'>No estás loggeado</p>;
   const id = session?.user.id;
   const user = await fetchUser(id);
   return (
