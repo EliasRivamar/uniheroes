@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import {auth} from '@/auth'
 import Image from 'next/image';
 import { fetchUser } from "@/app/lib/data";
 import EditProfile from "./EditProfile"
